@@ -17,6 +17,7 @@ const Board = ({ currentPlayer, bid, winningTeamId, players, teams, setType, nom
           Object.keys(players).map(key =>
             <Player 
               key={key}
+              index={key}
               player={players[key]}
               nominate={nominate}
             />

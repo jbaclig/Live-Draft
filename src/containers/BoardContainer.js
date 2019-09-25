@@ -5,7 +5,7 @@ import Board from '../components/LiveDraft/Board';
 const mapStateToProps = state => {
   return {
     currentPlayer: state.auction.currentPlayer,
-    bid: state.auction.bid,
+    bid: state.auction.currentBid,
     winningTeamId: state.auction.winningTeamId,
     players: state.players,
     teams: state.teams
