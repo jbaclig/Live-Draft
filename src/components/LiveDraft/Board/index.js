@@ -1,37 +1,29 @@
 import React from 'react';
-import Player from '../Player';
+import PlayerBoard from './PlayerBoard';
 import Auction from './Auction';
 
-const Board = ({ currentPlayer, bid, winningTeamId, players, teams, setType, nominate }) =>
+const Board = ({ 
+  currentPlayer, bid, winningTeamId, players, teams, setType, auctionIsActive, 
+  nominationOrder, nominatingTeamPos, nominate, startAuction, endAuction
+}) =>
   <section className="board">
     <h1>Draft Board</h1>
-    {currentPlayer ? 
-      <Auction
-        player={players[currentPlayer]}
-        bid={bid}
-        winningTeamId={winningTeamId}
-        teams={teams} /> :
-      <article>
-        <h2>Available Players</h2>
-        {players ? 
-          Object.keys(players).map(key =>
-            <Player 
-              key={key}
-              index={key}
-              player={players[key]}
-              nominate={nominate}
-            />
-          ) :
-          <p>No Available Players</p>
-        }
-      </article>
-    }
-    <button 
-      id="backBtn"
-      onClick={() => setType(null)}
-    >
-      Back
-    </button>
+    <Auction
+      player={players[currentPlayer]}
+      bid={bid}
+      winningTeamId={winningTeamId}
+      teams={teams}
+      isActive={auctionIsActive}
+      nominatingTeamId={nominationOrder[nominatingTeamPos]}
+      startAuction={startAuction}
+      endAuction={endAuction}
+    />
+    <PlayerBoard 
+      auctionIsActive={auctionIsActive} 
+      players={players} 
+      nominate={nominate} 
+    />
+    <button id="backBtn" onClick={() => setType(null)}>Back</button>
   </section>
 
 export default Board;

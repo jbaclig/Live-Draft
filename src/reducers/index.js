@@ -2,10 +2,16 @@ import * as types from '../constants/actionTypes';
 import * as functions from './reducerFunctions';
 
 const initialState = {
+  settings: {
+    rosterSize: 13
+  },
   auction: {
     currentPlayer: null,
     currentBid: 0,
-    winningTeamId: null
+    winningTeamId: null,
+    nominationOrder: [3, 1, 0, 2],
+    nominatingTeamPos: 0,
+    isActive: false
   },
   players: {
     101: {
@@ -70,6 +76,8 @@ const initialState = {
 function rootReducer(state = initialState, action) {
   if(action.type === types.NOMINATE_PLAYER) 
     return functions.nominatePlayer(state, action.playerId);
+  if(action.type === types.START_AUCTION)
+    return functions.startAuction(state, action.bid);
   else if(action.type === types.BID) 
     return functions.bid(state, action.value, action.teamId);
   else if(action.type === types.END_AUCTION)

@@ -8,9 +8,9 @@ function LiveDraft() {
 
   return type ?
     type === 'board' ? 
-      <BoardContainer setType={setType} />
-      : <Team setType={setType} />
-    : <Selector setType={setType} />
+      <BoardContainer setType={setType} /> :
+      <Team setType={setType} /> :
+    <Selector setType={setType} />
 }
 
 export default LiveDraft;

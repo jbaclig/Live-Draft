@@ -11,6 +11,15 @@ describe('actions', () => {
     expect(actions.nominatePlayer(playerId)).toEqual(expectedAction);
   });
 
+  it('should create action to start an auction', () => {
+    const bid = 15;
+    const expectedAction = {
+      type: types.START_AUCTION,
+      bid
+    };
+    expect(actions.startAuction(bid)).toEqual(expectedAction);
+  });
+
   it('should create action to place a bid', () => {
     const value = 42;
     const teamId = 4;

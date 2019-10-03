@@ -1,22 +1,27 @@
-import { BID, NOMINATE_PLAYER, END_AUCTION, ADD_PLAYER_TO_TEAM } from '../constants/actionTypes';
+import * as actions from '../constants/actionTypes';
 
 export const nominatePlayer = playerId => ({
-  type: NOMINATE_PLAYER,
+  type: actions.NOMINATE_PLAYER,
   playerId
 });
 
+export const startAuction = bid => ({
+  type: actions.START_AUCTION,
+  bid
+});
+
 export const bid = (value, teamId) => ({
-  type: BID,
+  type: actions.BID,
   value,
   teamId
 });
 
 export const endAuction = () => ({
-  type: END_AUCTION
+  type: actions.END_AUCTION
 });
 
 export const addPlayerToTeam = (playerId, teamId) => ({
-  type: ADD_PLAYER_TO_TEAM,
+  type: actions.ADD_PLAYER_TO_TEAM,
   playerId,
   teamId
 });

@@ -1,11 +1,30 @@
 export function nominatePlayer(state, playerId) {
-  return Object.assign({}, state, {
-    auction: {
-      currentPlayer: playerId,
-      currentBid: 0,
-      winningTeamId: null
-    }
-  });
+  let auction = state.auction;
+  auction.currentPlayer = playerId;
+  return Object.assign({}, state, {auction: auction});
+}
+
+export function startAuction(state, bid) {
+  let auction = state.auction;
+  let nominatingTeamId = auction.nominationOrder[auction.nominatingTeamPos];
+  let nominatingTeam = state.teams[nominatingTeamId];
+  let rosterSize = state.settings.rosterSize;
+  let teamMaxBid = nominatingTeam.budget - (rosterSize - nominatingTeam.players.length + 1);
+  console.log('bid:', bid, 'teamMaxBid:', teamMaxBid);
+  if(bid <= teamMaxBid && bid > 0) {
+    auction.currentBid = bid;
+    auction.winningTeamId = nominatingTeamId;
+    auction.isActive = true;
+    return Object.assign({}, state, {auction: auction});
+  }
+  else if(bid > teamMaxBid) {
+    window.alert('bid is greater than team\'s max');
+    return state;
+  }
+  else if(bid < 1) {
+    window.alert('bid must be greater than 0');
+    return state;
+  }
 }
 
 export function bid(state, value, teamId) {
@@ -27,14 +46,19 @@ export function bid(state, value, teamId) {
 }
 
 export function endAuction(state) {
-  let winningTeamId = state.auction.winningTeamId;
-  let winningBid = state.auction.currentBid;
+  let auction = state.auction;
+
+  let winningTeamId = auction.winningTeamId;
+  let winningBid = auction.currentBid;
   let teams = state.teams;
   let winningTeam = teams[0];
   
-  let playerId = state.auction.currentPlayer;
+  let playerId = auction.currentPlayer;
   let players = state.players;
   let player = players[playerId];
+
+  let nextNominatingTeamPos = auction.nominatingTeamPos === auction.nominationOrder.length ? 
+    0 : auction.nominatingTeamPos + 1;
 
   winningTeam.budget = winningTeam.budget - winningBid;
   winningTeam.players.push(playerId); 
@@ -43,12 +67,14 @@ export function endAuction(state) {
   player.ownerId = winningTeamId;
   players[playerId] = player;
 
+  auction.currentPlayer = null;
+  auction.currentBid = 0;
+  auction.winningTeamId = null;
+  auction.nominatingTeamPos = nextNominatingTeamPos;
+  auction.isActive = false;
+
   return Object.assign({}, state, {
-    auction: {
-      currentPlayer: null,
-      currentBid: 0,
-      winningTeamId: null
-    },
+    auction: auction,
     players: players,
     teams: teams
   })

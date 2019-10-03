@@ -7,7 +7,10 @@ describe('reducer', () => {
       auction: {
         currentPlayer: null,
         currentBid: 0,
-        winningTeamId: null
+        winningTeamId: null,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 0,
+        isActive: false
       }
     }, {
       type: types.NOMINATE_PLAYER,
@@ -16,9 +19,95 @@ describe('reducer', () => {
       auction: {
         currentPlayer: 104,
         currentBid: 0,
-        winningTeamId: null
+        winningTeamId: null,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 0,
+        isActive: false
       }
     })
+  });
+
+  it('should start an auction with the selected player', () => {
+    expect(reducer({
+      settings: {
+        rosterSize: 13
+      },
+      auction: {
+        currentPlayer: 104,
+        currentBid: 0,
+        winningTeamId: null,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 0,
+        isActive: false
+      },
+      teams: [
+        {
+          name: 'Team 1',
+          owner: 'Owner 1',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 2',
+          owner: 'Owner 2',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 3',
+          owner: 'Owner 3',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 4',
+          owner: 'Owner 4',
+          budget: 200,
+          players: []
+        },
+      ]
+    }, {
+      type: types.START_AUCTION,
+      bid: 15
+    })).toEqual({
+      settings: {
+        rosterSize: 13
+      },
+      auction: {
+        currentPlayer: 104,
+        currentBid: 15,
+        winningTeamId: 3,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 0,
+        isActive: true
+      },
+      teams: [
+        {
+          name: 'Team 1',
+          owner: 'Owner 1',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 2',
+          owner: 'Owner 2',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 3',
+          owner: 'Owner 3',
+          budget: 200,
+          players: []
+        },
+        {
+          name: 'Team 4',
+          owner: 'Owner 4',
+          budget: 200,
+          players: []
+        },
+      ]
+    });
   });
 
   it('should accept bid if greater than current', () => {
@@ -152,7 +241,10 @@ describe('reducer', () => {
       auction: {
         currentPlayer: 102,
         currentBid: 47,
-        winningTeamId: 0
+        winningTeamId: 0,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 0,
+        isActive: true
       },
       players: {
         102: {
@@ -176,7 +268,10 @@ describe('reducer', () => {
       auction: {
         currentPlayer: null,
         currentBid: 0,
-        winningTeamId: null
+        winningTeamId: null,
+        nominationOrder: [3, 1, 0, 2],
+        nominatingTeamPos: 1,
+        isActive: false
       },
       players: {
         102: {

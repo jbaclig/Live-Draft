@@ -5,10 +5,6 @@ import Player from '../Player';
 import Auction from './Auction';
 
 describe('Board tests', () => {
-  it('renders without crashing', () => {
-    shallow(<Board />);
-  });
-
   let players = {
     101: {
       name: 'James Harden',
@@ -24,20 +20,8 @@ describe('Board tests', () => {
     },
   };
 
-  it('renders list of players', () => {
-    let wrapper = shallow(<Board players={players} />);
-    expect(wrapper.find(Player)).toHaveLength(2);
+  it('renders without crashing', () => {
+    shallow(<Board players={players} nominationOrder={[0]} nominatingTeamPos={0} />);
   });
 
-  let currentPlayer = 102;
-
-  it('renders current auction', () => {
-    let wrapper = shallow(
-      <Board 
-        players={players} 
-        currentPlayer={currentPlayer} 
-      />
-    );
-    expect(wrapper.find(Auction)).toHaveLength(1);
-  });
 });

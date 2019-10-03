@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { nominatePlayer } from '../actions';
+import * as actions from '../actions';
 import Board from '../components/LiveDraft/Board';
 
 const mapStateToProps = state => {
@@ -8,14 +8,23 @@ const mapStateToProps = state => {
     bid: state.auction.currentBid,
     winningTeamId: state.auction.winningTeamId,
     players: state.players,
-    teams: state.teams
+    teams: state.teams,
+    auctionIsActive: state.auction.isActive,
+    nominationOrder: state.auction.nominationOrder,
+    nominatingTeamPos: state.auction.nominatingTeamPos
   }
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     nominate: playerId => {
-      dispatch(nominatePlayer(playerId))
+      dispatch(actions.nominatePlayer(playerId))
+    },
+    startAuction: bid => {
+      dispatch(actions.startAuction(bid))
+    },
+    endAuction: () => {
+      dispatch(actions.endAuction())
     }
   }
 };
