@@ -29,7 +29,7 @@ const initialState = {
     103: {
       name: 'Giannis Antetokounmpo',
       team: 'MIL', 
-      position: 'PG, SG, SF, PF, C',
+      position: 'PG, PF, C',
       ownerId: null, 
     },
     104: {

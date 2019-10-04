@@ -51,6 +51,5 @@ class Auction extends React.Component {
     </article>;
   }
 }
-  
 
 export default Auction;
