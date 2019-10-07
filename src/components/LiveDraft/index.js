@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BoardContainer from '../../containers/BoardContainer';
-import Team from './Team';
+import TeamContainer from '../../containers/TeamContainer';
 import Selector from './Selector';
 
 function LiveDraft() {

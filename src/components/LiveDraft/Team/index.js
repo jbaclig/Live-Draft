@@ -6,26 +6,26 @@ class Team extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      teamId: null
+      team: null
     }
 
-    this.setTeamId = this.setTeamId.bind(this);
+    this.setTeam = this.setTeam.bind(this);
   }
 
-  setTeamId(id) {
-    this.setState({teamId: id});
+  setTeam(team) {
+    this.setState({team: team});
   }
 
   render() {
     return <section className="team">
-      {this.state.teamId ?
-        <Bidder team={this.props.teams[this.state.teamId]} /> :
-        <TeamSelector teams={this.props.teams} setTeamId={this.setTeamId} />
+      {this.state.team ?
+        <Bidder team={this.state.team} /> :
+        <TeamSelector teams={this.props.teams} setTeam={this.setTeam} />
       }
 
       <button
         id="backBtn"
-        onClick={() => setType(null)}
+        onClick={() => this.props.setType(null)}
       >
         Back
       </button>
