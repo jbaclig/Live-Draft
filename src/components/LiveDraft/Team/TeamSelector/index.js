@@ -33,7 +33,7 @@ class TeamSelector extends React.Component {
       {this.state.selectedTeam ? 
         <button 
           className="confirmBtn"
-          onClick={() => this.props.setTeam(this.state.selectedTeam)}
+          onClick={() => this.props.setTeam(this.state.selectedTeam, this.state.selectedTeamIndex)}
         >
           Confirm
         </button> :
