@@ -1,11 +1,23 @@
-const jwtSecrect = require('./jwtConfig');
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-
-const BCRYPT_SALT_ROUNDS = 12;
-
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const passportJWT = require('passport-jwt');
+const User = require('../models/user');
+const jwtConfig = require('../config/jwtConfig');
+
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
+
+passport.use(
+  new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: jwtConfig.secret
+  },
+  function (jwtPayload, cb) {
+    User.findUser(jwtPayload)
+      .then(user => cb(null, user))
+      .catch(err => cb(err));
+  }
+));
 
 passport.use(
   'register',
