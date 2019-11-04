@@ -41,7 +41,7 @@ const createLocalUser = (user) => {
 
 const createThirdPartyUser = (user) => {
   return database.raw(
-    "INSERT INTO users (username, provider, token, created_at) VALUES (?, ?, ?, ?) RETURNING id, username, token, created_at",
+    "INSERT INTO users (username, provider, token, created_at) VALUES (?, ?, ?, ?) RETURNING id, username, provider, token, created_at",
     [user.username, user.provider, user.token, new Date()]
   )
   .then(data => data.rows[0])
@@ -75,7 +75,7 @@ const signin = (req, res) => {
 }
 
 const findUser = userReq => {
-  return database.raw('SELECT * FROM users where username = ?', [userReq.username])
+  return database.raw('SELECT * FROM users where LOWER(username) = LOWER(?)', [userReq.username])
     .then(data => data.rows[0]);
 }
 

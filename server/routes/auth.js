@@ -66,9 +66,7 @@ router.get(
 );
 
 router.get('/google/callback', (request, response, next) => {
-  passport.authenticate('google', { session: false, successRedirect: '/' }, (err, user, info) => {
-    // console.log('user:', user);
-    // return response.redirect('/');
+  passport.authenticate('google', { session: false }, (err, user, info) => {
     if(err || !user) {
       return response.status(400).json({
         message: 'Something went wrong',
@@ -85,7 +83,40 @@ router.get('/google/callback', (request, response, next) => {
       });
     }
 
-    // return response.json({ user });
+    request.login(user, { session: false }, (err) => {
+      if(err) {
+        response.send(err);
+      }
+
+      const token = jwt.sign(user, jwtConfig.secret);
+      return response.json({ user, token });
+    });
+  })(request, response, next);
+});
+
+router.get(
+  '/facebook', 
+  passport.authenticate('facebook', { scope: ['email'] })
+);
+
+router.get('/facebook/callback', (request, response, next) => {
+  passport.authenticate('facebook', { session: false }, (err, user, info) => {
+    console.log('user:', user);
+    if(err || !user) {
+      return response.status(400).json({
+        message: 'Something went wrong',
+        error: err,
+        user: user
+      });
+    }
+    else if(user.provider !== 'Facebook') {
+      return response.status(400).json({
+        message: 
+          'You previously logged in with ' + user.provider + '. ' + 
+          'Please login using ' + user.provider + '.',
+        user: user
+      });
+    }
 
     request.login(user, { session: false }, (err) => {
       if(err) {
@@ -99,31 +130,12 @@ router.get('/google/callback', (request, response, next) => {
 });
 
 // router.get(
-//   '/google/callback',
-//   passport.authenticate('google', { session: false }),
-// 	function(request, response, next) {
-// 	  // Successful authentication, redirect home.
-//     // console.log('response:', response);
-//     console.log('request.user:', request.user);
-//     // console.log('next:', next);
-// 	  response.redirect('/');
-// 	  //console.log('response.req.user:', response.req.user);
-// 	  console.log('Google login success');
-// 	}
+//   '/facebook/callback', 
+//   passport.authenticate('facebook', { session: false }),
+//   function(request, response) {
+//     response.redirect('/');
+//     console.log('Facebook login success');
+//   }
 // );
-
-router.get(
-  '/facebook', 
-  passport.authenticate('facebook', { scope: ['email'] })
-);
-
-router.get(
-  '/facebook/callback', 
-  passport.authenticate('facebook', { session: false }),
-  function(request, response) {
-    response.redirect('/');
-    console.log('Facebook login success');
-  }
-);
 
 module.exports = router;

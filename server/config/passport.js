@@ -32,17 +32,11 @@ passport.use(
 passport.use(new GoogleStrategy({
   clientID: keys.google.clientID,
   clientSecret: keys.google.clientSecret,
-  callbackURL: "/auth/google/callback"
+  callbackURL: '/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
-  // console.log('accessToken:', accessToken);
-  // console.log('refreshToken:', refreshToken);
-  // console.log('profile:', profile);
-  //check for user
   User.findUser({username: profile.emails[0].value})
     .then(user => {
-      console.log('User.findUser result:', user);
       if(user) {
-        console.log('GoogleStrategy user exists.');
         return done(null, user);
       }
       else {
@@ -64,13 +58,6 @@ passport.use(new GoogleStrategy({
       console.log(err);
       return done(err)
     });
-  ////if found, log user in
-  ////if not found, create user
-  // done(null, { 
-  //   accessToken: accessToken, 
-  //   refreshToken: refreshToken, 
-  //   profile: profile 
-  // });
 }));
 
 passport.use(new FacebookStrategy({
@@ -79,15 +66,30 @@ passport.use(new FacebookStrategy({
   callbackURL: '/auth/facebook/callback',
   profileFields: ['email']
 }, (accessToken, refreshToken, profile, done) => {
-  console.log('accessToken:', accessToken);
-  console.log('refreshToken:', refreshToken);
-  console.log('profile:', profile);
-
-  done(null, { 
-    accessToken: accessToken, 
-    refreshToken: refreshToken, 
-    profile: profile 
-  });
+  User.findUser({username: profile.emails[0].value})
+    .then(user => {
+      if(user) {
+        return done(null, user);
+      }
+      else {
+        let newUser = {
+          username: profile.emails[0].value,
+          provider: 'Facebook'
+        };
+        User.createToken()
+          .then(token => newUser.token = token)
+          .then(() => User.createThirdPartyUser(newUser))
+          .then(user => done(null, user))
+          .catch(err => {
+            console.log(error);
+            return done(err);
+          });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      return done(err)
+    });
 }));
 
 passport.use(
