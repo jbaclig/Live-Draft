@@ -10,7 +10,7 @@ const signup = (req, res) => {
   hashPassword(user.password)
     .then(hashedPassword => {
       delete user.password;
-      user.password_digest = hashedPassword
+      user.password_digest = hashedPassword;
     })
     .then(() => createToken())
     .then(token => user.token = token)
@@ -31,12 +31,20 @@ const hashPassword = password => {
   });
 };
 
-const createUser = (user) => {
+const createLocalUser = (user) => {
   return database.raw(
-    "INSERT INTO users (username, password_digest, created_at) VALUES (?, ?, ?) RETURNING id, username, created_at",
-    [user.username, user.password_digest, new Date()]
+    "INSERT INTO users (username, password_digest, provider, token, created_at) VALUES (?, ?, ?, ?, ?) RETURNING id, username, token, created_at",
+    [user.username, user.password_digest, 'email', user.token, new Date()]
   )
   .then(data => data.rows[0]);
+}
+
+const createThirdPartyUser = (user) => {
+  return database.raw(
+    "INSERT INTO users (username, provider, token, created_at) VALUES (?, ?, ?, ?) RETURNING id, username, token, created_at",
+    [user.username, user.provider, user.token, new Date()]
+  )
+  .then(data => data.rows[0])
 }
 
 const createToken = () => {
@@ -110,5 +118,8 @@ module.exports = {
   findUser,
   checkPassword,
   hashPassword,
-  createUser
+  createLocalUser,
+  createToken,
+  updateUserToken,
+  createThirdPartyUser
 }

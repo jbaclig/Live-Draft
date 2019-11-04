@@ -8,5 +8,9 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  
+  let undoAlterQuery = `
+    ALTER TABLE users
+    DROP CONSTRAINT constraint_name
+  `;
+  return knex.raw(undoAlterQuery);
 };

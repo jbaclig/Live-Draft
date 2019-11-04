@@ -10,6 +10,7 @@ router.post('/register', (request, response, next) => {
     if(err || !user) {
       return response.status(400).json({
         message: 'Somthing went wrong',
+        error: err,
         user: user
       });
     }
@@ -30,6 +31,15 @@ router.post('/login', (request, response, next) => {
     if(err || !user) {
       return response.status(400).json({
         message: 'Something went wrong',
+        error: err,
+        user: user
+      });
+    }
+    else if(user.provider !== 'email') {
+      return response.status(400).json({
+        message: 
+          'You previously logged in with ' + user.provider + '. ' + 
+          'Please login using ' + user.provider + '.',
         user: user
       });
     }
@@ -44,5 +54,76 @@ router.post('/login', (request, response, next) => {
     });
   })(request, response, next);
 });
+
+router.get(
+	'/google',
+	passport.authenticate('google', {
+    scope: [
+      'https://www.googleapis.com/auth/userinfo.profile',
+      'https://www.googleapis.com/auth/userinfo.email'
+    ],
+	}),
+);
+
+router.get('/google/callback', (request, response, next) => {
+  passport.authenticate('google', { session: false, successRedirect: '/' }, (err, user, info) => {
+    // console.log('user:', user);
+    // return response.redirect('/');
+    if(err || !user) {
+      return response.status(400).json({
+        message: 'Something went wrong',
+        error: err,
+        user: user
+      });
+    }
+    else if(user.provider !== 'Google') {
+      return response.status(400).json({
+        message: 
+          'You previously logged in with ' + user.provider + '. ' + 
+          'Please login using ' + user.provider + '.',
+        user: user
+      });
+    }
+
+    // return response.json({ user });
+
+    request.login(user, { session: false }, (err) => {
+      if(err) {
+        response.send(err);
+      }
+
+      const token = jwt.sign(user, jwtConfig.secret);
+      return response.json({ user, token });
+    });
+  })(request, response, next);
+});
+
+// router.get(
+//   '/google/callback',
+//   passport.authenticate('google', { session: false }),
+// 	function(request, response, next) {
+// 	  // Successful authentication, redirect home.
+//     // console.log('response:', response);
+//     console.log('request.user:', request.user);
+//     // console.log('next:', next);
+// 	  response.redirect('/');
+// 	  //console.log('response.req.user:', response.req.user);
+// 	  console.log('Google login success');
+// 	}
+// );
+
+router.get(
+  '/facebook', 
+  passport.authenticate('facebook', { scope: ['email'] })
+);
+
+router.get(
+  '/facebook/callback', 
+  passport.authenticate('facebook', { session: false }),
+  function(request, response) {
+    response.redirect('/');
+    console.log('Facebook login success');
+  }
+);
 
 module.exports = router;
