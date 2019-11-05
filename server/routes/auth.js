@@ -17,7 +17,7 @@ router.post('/register', (request, response, next) => {
 
     request.login(user, { session: false }, (err) => {
       if(err) {
-        response.send(err);
+        return response.send(err);
       }
 
       const token = jwt.sign(user, jwtConfig.secret);
@@ -46,7 +46,7 @@ router.post('/login', (request, response, next) => {
 
     request.login(user, { session: false }, (err) => {
       if(err) {
-        response.send(err);
+        return response.send(err);
       }
 
       const token = jwt.sign(user, jwtConfig.secret);
@@ -85,7 +85,7 @@ router.get('/google/callback', (request, response, next) => {
 
     request.login(user, { session: false }, (err) => {
       if(err) {
-        response.send(err);
+        return response.send(err);
       }
 
       const token = jwt.sign(user, jwtConfig.secret);
@@ -120,7 +120,7 @@ router.get('/facebook/callback', (request, response, next) => {
 
     request.login(user, { session: false }, (err) => {
       if(err) {
-        response.send(err);
+        return response.send(err);
       }
 
       const token = jwt.sign(user, jwtConfig.secret);
