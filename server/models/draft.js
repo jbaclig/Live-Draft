@@ -26,8 +26,17 @@ const getAllUserDrafts = (userId) => {
   .then(data => data.rows);
 }
 
+const updateState = ({ id, state }) => {
+  return database.raw(
+    'UPDATE drafts SET state = ? WHERE id = ? RETURNING id, name, owner_id, state',
+    [state, id]
+  )
+  .then(data => data.rows[0]);
+}
+
 module.exports = {
   createDraft,
   getDraftById,
-  getAllUserDrafts
+  getAllUserDrafts,
+  updateState
 };

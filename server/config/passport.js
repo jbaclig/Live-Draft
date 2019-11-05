@@ -18,8 +18,8 @@ passport.use(
   function (jwtPayload, cb) {
     User.findUser(jwtPayload)
       .then(user => {
-        console.log('jwtPayload:', jwtPayload),
-        console.log('user.token:', user.token);
+        // console.log('jwtPayload:', jwtPayload),
+        // console.log('user.token:', user.token);
         if(jwtPayload.token === user.token) 
           return cb(null, user);
         else

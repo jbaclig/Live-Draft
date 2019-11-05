@@ -72,4 +72,26 @@ router.get('/getall/:ownerId', (request, response) => {
   })(request, response);
 });
 
+router.put('/update/state', (request, response) => {
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if(err) {
+      return response.status(500).json({
+        message: 'Something went wrong',
+        error: err
+      });
+    }
+
+    Draft.getDraftById(request.body.id)
+      .then(draft => {
+        if(user.id != draft['owner_id'])
+          return response.status(500).json({
+            message: 'owner ID does not match ID of logged in user'
+          });
+        
+        Draft.updateState(request.body)
+          .then(draft => response.json(draft));
+      });
+  })(request, response);
+});
+
 module.exports = router;
